@@ -8,7 +8,7 @@
 #include <conio.h> //getch()
 #include <stdio.h>
 #include <stdlib.h> //srand(), rand()
-#include <string.h> //strcmp()
+#include <string.h> //strcmp(), strchr()
 #include <time.h> //time()
 
 void clearScreen();

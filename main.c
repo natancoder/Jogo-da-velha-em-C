@@ -1,10 +1,3 @@
-/*Uma implementação do jogo da forca
-
-        feito por Natan Frota
-
-          em março de 2024.
-*/
-
 #include <conio.h> //getch()
 #include <stdio.h>
 #include <stdlib.h> //srand(), rand()

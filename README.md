@@ -1,0 +1,2 @@
+Jogo da forca
+Este é um projeto de jogo da forca desenvolvido em linguagem C como parte dos meus estudos sobre strings, ponteiros e funções. O jogo da forca é um clássico passatempo onde o jogador deve adivinhar uma palavra oculta, tendo como dia o número de letras e algumas letras já reveladas. Este projeto foi criado para aprimorar minhas habilidades de programação em C, especialmente no manuseio de strings, ponteiros e funções.

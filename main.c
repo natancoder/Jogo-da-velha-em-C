@@ -5,12 +5,13 @@
 #include <time.h> //time()
 
 void clearScreen();
-int checkRepetition(int *vetor, int num, int tam);
-void checkLetter(char *word, char *hits,  char letter, char *mistakes, int *cont_mistakes);
-void fillMistakes(char s[], int tam);
+int checkRepetition(int *array, int num, int tam);
+int checkLetter(char *word, char *hits,  char letter);
+void initializeMistakes(char s[], int tam);
+void fillMistakes(char *mistakes, int *mistakesCount, char letter);
 void printMistakes(char *s, int cont);
 void printHang(int cont);
-void fillString(char hits[], int tam);
+void initializeString(char hits[], int tam);
 void printWord(char hits[], int tam);
 
 int main(){
@@ -19,13 +20,10 @@ int main(){
     "liberdade", "prateleira", "computador", "investigador", "utopia"};
     char *clues[] = {"Profissao", "Animal", "Um unico ser", "Local de comercio", "Doutrina economica",
     "Direito fundamental", "Objeto", "Maquina", "Profissao", "Estado ou lugar imaginario e ideial"};
-    char hits[50], mistakes[6], letter;
-    int cont_mistakes;
-    int repetidos[10], cont_voltas = 0;
+    char hits[50], mistakes[6], letter, ch;
+    int repeated[10], turnsCount = 0, mistakesCount, contained;
 
     srand(time(NULL));
-
-    char ch;
 
     do {
 
@@ -33,22 +31,22 @@ int main(){
 
         do{ // verifica se o número gerado é repetido, ou seja, a palavra corresponde já apareceu
             i = rand() % 10;
-        } while(checkRepetition(repetidos, i, cont_voltas));
+        } while(checkRepetition(repeated, i, turnsCount));
 
-        repetidos[cont_voltas] = i;
+        repeated[turnsCount] = i;
 
-        fillString(hits, strlen(word[i])); // preenche-a com sublinhas
-        fillMistakes(mistakes, 6); // preenche-a com espaços
-        cont_mistakes = 0; // inicializa os contadores com 0
+        initializeString(hits, strlen(word[i])); // preenche-a com sublinhas
+        initializeMistakes(mistakes, 6); // preenche-a com espaços
+        mistakesCount = 0; // inicializa os contadores com 0
 
         do
         {
             clearScreen();// limpa o terminal
 
             printf("\n\t\tJOGO DA FORCA\n");
-            printMistakes(mistakes, cont_mistakes);
+            printMistakes(mistakes, mistakesCount);
             printf("\t PISTA: %s\n", clues[i]);
-            printHang(cont_mistakes);
+            printHang(mistakesCount);
             printWord(hits, strlen(word[i]));
 
             do{ //lê e verifica se o carácter digitado é uma letra
@@ -57,24 +55,26 @@ int main(){
 
 
             /*verifica se a letra digitada está contida na palavra ou se já foi digitada
-            anteriormente e incrementa o contador de erros*/
-            checkLetter(word[i], hits,  letter, mistakes, &cont_mistakes);
+            anteriormente*/
+            contained = checkLetter(word[i], hits,  letter);
+            if (contained == 0)
+                fillMistakes(mistakes, &mistakesCount, letter);
 
-        }while (cont_mistakes < 6 && strcmp(word[i], hits) != 0);
+        }while (mistakesCount < 6 && strcmp(word[i], hits) != 0);
 
         clearScreen();
         printf("\n\t\tJOGO DA FORCA\n");
-        printMistakes(mistakes, cont_mistakes);
+        printMistakes(mistakes, mistakesCount);
         printf("\t PISTA: %s\n", clues[i]);
-        printHang(cont_mistakes);
+        printHang(mistakesCount);
         printWord(hits, strlen(word[i]));
 
         if (strcmp(word[i], hits) == 0)// verifica se elas são iguais
-            printf("\n\tYou won!\n");
+            printf("\n\tGanhaste!\n");
         else
-            printf("\n\tYou lost.\n");
+            printf("\n\tPerdeste.\n");
 
-        cont_voltas++;// incrementa o contador
+        turnsCount++;// incrementa o contador
 
         printf("\n\tDo you want to play again(y/n)?\n\t");
         ch = getchar();
@@ -91,31 +91,35 @@ void clearScreen(){
     #endif
 }
 
-int checkRepetition(int *vetor, int num, int tam){
+int checkRepetition(int *array, int num, int tam){
     int i;
     for (i = 0; i < tam; i++)
-        if (num == vetor[i])
+        if (num == array[i])
             return 1;
 
     return 0;
 }
 
-void checkLetter(char *word, char *hits,  char letter, char *mistakes, int *cont_mistakes){
-    int length, i, contido = 0;
+int checkLetter(char *word, char *hits,  char letter){
+    int length, i, contained = 0;
 
     for (i = 0, length = strlen(word); i < length; i++)
         if (letter == word[i]){
-            contido = 1; //a letra está contida na palavra
+            contained = 1; //a letra está contida na palavra
             hits[i] = letter;// salva a letra na cadeia de caracteres exibida na tela
         }
+    return contained;
+}
+
+void fillMistakes(char *mistakes, int *mistakesCount, char letter){
     /*a letra não está contida e ainda não foi digitada*/
-    if (contido == 0 && strchr(mistakes, letter) == NULL){
-        mistakes[*cont_mistakes] = letter; // salva a letra na string de erros
-        ++(*cont_mistakes);
+    if (strchr(mistakes, letter) == NULL){
+        mistakes[*mistakesCount] = letter; // salva a letra na string de erros
+        ++(*mistakesCount);
     }
 }
 
-void fillMistakes(char s[], int tam){
+void initializeMistakes(char s[], int tam){
     int i;
     for (i = 0; i < tam; i++)
         s[i] = ' ';
@@ -165,7 +169,7 @@ void printHang(int cont){
     printf("\t__|__\n");
 }
 
-void fillString(char hits[], int tam){
+void initializeString(char hits[], int tam){
     int i;
 
     for (i = 0; i < tam; i++)

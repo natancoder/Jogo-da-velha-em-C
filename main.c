@@ -1,3 +1,4 @@
+#include <ctype.h> // tolower()
 #include <conio.h> //getch()
 #include <stdio.h>
 #include <stdlib.h> //srand(), rand()
@@ -20,7 +21,7 @@ int main(){
     "liberdade", "prateleira", "computador", "investigador", "utopia"};
     char *clues[] = {"Profissao", "Animal", "Um unico ser", "Local de comercio", "Doutrina economica",
     "Direito fundamental", "Objeto", "Maquina", "Profissao", "Estado ou lugar imaginario e ideial"};
-    char hits[50], mistakes[6], letter, ch;
+    char hits[50], mistakes[6], letter;
     int repeated[10], turnsCount = 0, mistakesCount, contained;
 
     srand(time(NULL));
@@ -51,6 +52,7 @@ int main(){
 
             do{ //lê e verifica se o carácter digitado é uma letra
                 letter = getch();
+                letter = tolower(letter);
             } while (letter < 'a' || letter > 'z');
 
 
@@ -76,11 +78,9 @@ int main(){
 
         turnsCount++;// incrementa o contador
 
-        printf("\n\tDo you want to play again(y/n)?\n\t");
-        ch = getchar();
         getchar();
 
-    } while (ch == 'y');
+    } while (turnsCount < 10);
 }
 
 void clearScreen(){

@@ -6,7 +6,7 @@
 #include <time.h> //time()
 
 void clearScreen();
-int checkRepetition(int *array, int num, int tam);
+int checkRepetition(int *array, int num);
 int checkLetter(char *word, char *hits,  char letter);
 void initializeMistakes(char s[], int tam);
 void fillMistakes(char *mistakes, int *mistakesCount, char letter);
@@ -22,7 +22,7 @@ int main(){
     char *clues[] = {"Profissao", "Animal", "Um unico ser", "Local de comercio", "Doutrina economica",
     "Direito fundamental", "Objeto", "Maquina", "Profissao", "Estado ou lugar imaginario e ideial"};
     char hits[50], mistakes[6], letter;
-    int repeated[10], turnsCount = 0, mistakesCount, contained;
+    int repeated[10] = {0}, turnsCount = 0, mistakesCount, contained;
 
     srand(time(NULL));
 
@@ -32,9 +32,7 @@ int main(){
 
         do{ // verifica se o número gerado é repetido, ou seja, a palavra corresponde já apareceu
             i = rand() % 10;
-        } while(checkRepetition(repeated, i, turnsCount));
-
-        repeated[turnsCount] = i;
+        } while(checkRepetition(repeated, i));
 
         initializeString(hits, strlen(word[i])); // preenche-a com sublinhas
         initializeMistakes(mistakes, 6); // preenche-a com espaços
@@ -91,13 +89,13 @@ void clearScreen(){
     #endif
 }
 
-int checkRepetition(int *array, int num, int tam){
-    int i;
-    for (i = 0; i < tam; i++)
-        if (num == array[i])
-            return 1;
+int checkRepetition(int *array, int num){
+    if (array[num] == 0){
+        array[num] = 1;
+        return 0; // não é repetido
+    }
 
-    return 0;
+    return 1; // repetido
 }
 
 int checkLetter(char *word, char *hits,  char letter){
